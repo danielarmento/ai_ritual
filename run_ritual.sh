@@ -1,5 +1,5 @@
 #!/bin/bash
-cd "$(dirname "$0")"
+# Launcher for the Ancient Cosmic Chaos Deity AI
 
-echo "Launching Ritual AI..."
+cd "$(dirname "$0")"
 python3 ritual.py
