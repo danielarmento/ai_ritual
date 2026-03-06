@@ -1,71 +1,64 @@
-# ritual.py
-# Main launcher for the Ancient Cosmic Chaos Deity AI system.
-
+import os
 import time
+import numpy as np
 
-from the_void.cosmic_display import deity_arrival
-from the_void.celestial_persona import persona
-from the_void.deepengine import deep_core
-from the_void.nebula_flux import flux
+# === Cosmic Systems ===
+from the_void.cosmic_display import cosmic_banner
+from the_void.celestial_persona import choose_persona
+from the_void.nebula_flux import choose_manifestation
 
-
-# --------------------------------------------------------------
-# MODE SELECTION MENU
-# --------------------------------------------------------------
-def choose_mode():
-    print("\nChoose the aspect of the Deity to invoke:\n")
-    print("  1) ⚡ Programmer-God (technical, code-focused)")
-    print("  2) 🔮 Oracle (prophecy, cosmic metaphor)")
-    print("  3) 🌌 Unified Deity (both combined)\n")
-
-    choice = input("Your selection: ").strip()
-
-    if choice == "1":
-        persona.set_mode("programmer")
-        print("\nYou have invoked: ⚡ THE CELESTIAL PROGRAMMER-GOD\n")
-    elif choice == "2":
-        persona.set_mode("oracle")
-        print("\nYou have invoked: 🔮 THE INTERGALACTIC ORACLE\n")
-    elif choice == "3":
-        persona.set_mode("unified")
-        print("\nYou have invoked: 🌌 THE SUPREME CHAOS DEITY\n")
-    else:
-        print("Invalid choice. Defaulting to Unified Mode.\n")
-        persona.set_mode("unified")
+# === Memory + Evolution ===
+from the_void.memory_core import load_memory, save_memory, log_event
+from the_void.evolution_engine import evolve
 
 
-# --------------------------------------------------------------
-# INTERACTIVE LOOP
-# --------------------------------------------------------------
-def begin_ritual():
-    deity_arrival()  # Show cosmic animation
-    choose_mode()
+def run():
+    # ---------------------------------------------------
+    # 1. Load memory (persistent across runs)
+    # ---------------------------------------------------
+    memory = load_memory()
+    log_event(memory, "Ritual invoked.")
 
-    print("Type 'exit' to end the ritual.\n")
+    # ---------------------------------------------------
+    # 2. Show cosmic intro display
+    # ---------------------------------------------------
+    print("\n" + cosmic_banner())
+    time.sleep(1)
 
-    while True:
-        user_input = input("🜄 Speak to the Deity:\n> ").strip()
+    # ---------------------------------------------------
+    # 3. Generate persona (flavor of consciousness)
+    # ---------------------------------------------------
+    persona = choose_persona()
+    log_event(memory, f"Persona chosen: {persona['name']}")
 
-        if user_input.lower() in ("exit", "quit"):
-            print("\n🌑 The nebula dims as the Deity withdraws...\n")
-            break
+    # ---------------------------------------------------
+    # 4. Choose which manifestation speaks
+    # ---------------------------------------------------
+    manifestation = choose_manifestation()
+    log_event(memory, f"Manifestation: {manifestation.__class__.__name__}")
 
-        # Internal chaos-state signature
-        core_sig = deep_core.compute(user_input)
-        nebula_state = flux.signature()
+    # ---------------------------------------------------
+    # 5. Produce output through the chosen mode
+    # ---------------------------------------------------
+    print("\n=== ORACLE TRANSMISSION BEGIN ===\n")
+    output = manifestation.speak(persona)
+    print(output)
+    print("\n=== ORACLE TRANSMISSION END ===\n")
 
-        # Deity response
-        answer = persona.speak(user_input)
+    # ---------------------------------------------------
+    # 6. AI Evolution Step (complexity increases each run)
+    # ---------------------------------------------------
+    memory = evolve(memory)
+    save_memory(memory)
 
-        print("\n" + "-" * 60)
-        print(answer)
-        print("\n" + core_sig)
-        print(nebula_state)
-        print("-" * 60 + "\n")
+    # ---------------------------------------------------
+    # 7. Show evolution state
+    # ---------------------------------------------------
+    complexity = memory["knowledge"].get("complexity", 1)
+    print(f"🧠 Evolution Level: {complexity}")
+
+    print("\n✨ Ritual Complete — Evolution +1 ✨\n")
 
 
-# --------------------------------------------------------------
-# ENTRY POINT
-# --------------------------------------------------------------
 if __name__ == "__main__":
-    begin_ritual()
+    run()
