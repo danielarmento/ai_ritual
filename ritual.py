@@ -1,61 +1,71 @@
+# ritual.py
+# Main launcher for the Ancient Cosmic Chaos Deity AI system.
+
 import time
-import os
-import numpy as np
-from deepengine import Model, Dense, ReLU, Sigmoid
-from ritual_display import ritual_animation
-from demo import xor_demo
 
-# ----------------------------------------------------
-# Load XOR-trained neural network
-# ----------------------------------------------------
+from the_void.cosmic_display import deity_arrival
+from the_void.celestial_persona import persona
+from the_void.deepengine import deep_core
+from the_void.nebula_flux import flux
 
-def load_model():
-    # Model structure must match train.py
-    model = Model(
-        layers=[
-            Dense(2, 4),
-            ReLU(),
-            Dense(4, 1),
-            Sigmoid()
-        ],
-        loss=None,
-        optimizer=None
-    )
 
-    if os.path.exists("weights.npz"):
-        data = np.load("weights.npz", allow_pickle=True)
-        weights = data["weights"]
+# --------------------------------------------------------------
+# MODE SELECTION MENU
+# --------------------------------------------------------------
+def choose_mode():
+    print("\nChoose the aspect of the Deity to invoke:\n")
+    print("  1) ⚡ Programmer-God (technical, code-focused)")
+    print("  2) 🔮 Oracle (prophecy, cosmic metaphor)")
+    print("  3) 🌌 Unified Deity (both combined)\n")
 
-        # First layer
-        model.layers[0].W = weights.item().get("dense1_W")
-        model.layers[0].b = weights.item().get("dense1_b")
+    choice = input("Your selection: ").strip()
 
-        # Second layer
-        model.layers[2].W = weights.item().get("dense2_W")
-        model.layers[2].b = weights.item().get("dense2_b")
-
-        print("\n[✓] Loaded saved neural network weights.\n")
+    if choice == "1":
+        persona.set_mode("programmer")
+        print("\nYou have invoked: ⚡ THE CELESTIAL PROGRAMMER-GOD\n")
+    elif choice == "2":
+        persona.set_mode("oracle")
+        print("\nYou have invoked: 🔮 THE INTERGALACTIC ORACLE\n")
+    elif choice == "3":
+        persona.set_mode("unified")
+        print("\nYou have invoked: 🌌 THE SUPREME CHAOS DEITY\n")
     else:
-        print("\n[!] No weights found — run train.py first.\n")
+        print("Invalid choice. Defaulting to Unified Mode.\n")
+        persona.set_mode("unified")
 
-    return model
 
-# ----------------------------------------------------
-# Ritual runtime display
-# ----------------------------------------------------
+# --------------------------------------------------------------
+# INTERACTIVE LOOP
+# --------------------------------------------------------------
+def begin_ritual():
+    deity_arrival()  # Show cosmic animation
+    choose_mode()
 
-def run():
-    os.system("clear")
-    print("🌙 Starting Ritual AI...\n")
-    time.sleep(1)
+    print("Type 'exit' to end the ritual.\n")
 
-    ritual_animation()    # animated display
-    model = load_model()  # load neural network
+    while True:
+        user_input = input("🜄 Speak to the Deity:\n> ").strip()
 
-    print("Performing XOR demo:\n")
-    xor_demo(model)
+        if user_input.lower() in ("exit", "quit"):
+            print("\n🌑 The nebula dims as the Deity withdraws...\n")
+            break
 
-    print("\n✨ Ritual Complete.\n")
+        # Internal chaos-state signature
+        core_sig = deep_core.compute(user_input)
+        nebula_state = flux.signature()
 
+        # Deity response
+        answer = persona.speak(user_input)
+
+        print("\n" + "-" * 60)
+        print(answer)
+        print("\n" + core_sig)
+        print(nebula_state)
+        print("-" * 60 + "\n")
+
+
+# --------------------------------------------------------------
+# ENTRY POINT
+# --------------------------------------------------------------
 if __name__ == "__main__":
-    run()
+    begin_ritual()
