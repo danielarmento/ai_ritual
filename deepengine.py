@@ -22,7 +22,8 @@ class Dense:
         self.b -= lr * db
         return dx
 
-    def params(self): return [self.W, self.b]
+    def params(self): 
+        return [self.W, self.b]
 
 
 class ReLU:
@@ -43,16 +44,6 @@ class Sigmoid:
         return grad * self.out * (1 - self.out)
 
 
-class Softmax:
-    def forward(self, x):
-        e = np.exp(x - np.max(x, axis=1, keepdims=True))
-        self.out = e / np.sum(e, axis=1, keepdims=True)
-        return self.out
-
-    def backward(self, grad, lr):
-        return grad
-
-
 # ============================================================
 # Loss functions
 # ============================================================
@@ -67,35 +58,6 @@ class CrossEntropy:
     def backward(self):
         pred = np.clip(self.pred, 1e-9, 1 - 1e-9)
         return (pred - self.actual) / self.actual.shape[0]
-
-
-# ============================================================
-# Optimizer
-# ============================================================
-
-class Adam:
-    def __init__(self, b1=0.9, b2=0.999, eps=1e-8):
-        self.m = {}
-        self.v = {}
-        self.b1 = b1
-        self.b2 = b2
-        self.eps = eps
-        self.t = 0
-
-    def update(self, params, grads, lr):
-        self.t += 1
-        for i, (p, g) in enumerate(zip(params, grads)):
-            if i not in self.m:
-                self.m[i] = np.zeros_like(g)
-                self.v[i] = np.zeros_like(g)
-
-            self.m[i] = self.b1*self.m[i] + (1-self.b1)*g
-            self.v[i] = self.b2*self.v[i] + (1-self.b2)*(g**2)
-
-            m_hat = self.m[i] / (1 - self.b1**self.t)
-            v_hat = self.v[i] / (1 - self.b2**self.t)
-
-            p -= lr * m_hat / (np.sqrt(v_hat) + self.eps)
 
 
 # ============================================================
@@ -122,7 +84,7 @@ class DataLoader:
 # ============================================================
 
 class Model:
-    def __init__(self, layers, loss, optimizer):
+    def __init__(self, layers, loss, optimizer=None):
         self.layers = layers
         self.loss = loss
         self.opt = optimizer
@@ -135,19 +97,7 @@ class Model:
     def backward(self, grad, lr):
         for layer in reversed(self.layers):
             grad = layer.backward(grad, lr)
-
-    def train(self, loader, epochs=1000, lr=0.1):
-        for epoch in range(1, epochs+1):
-            losses = []
-            for batch_x, batch_y in loader:
-                out = self.forward(batch_x)
-                loss_value = self.loss.forward(out, batch_y)
-                grad = self.loss.backward()
-                self.backward(grad, lr)
-                losses.append(loss_value)
-
-            if epoch % 100 == 0 or epoch == 1:
-                print(f"Epoch {epoch}/{epochs} — Loss: {np.mean(losses):.6f}")
+        return grad
 
     def predict(self, x):
         return self.forward(x)
