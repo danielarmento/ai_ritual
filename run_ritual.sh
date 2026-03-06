@@ -2,9 +2,9 @@
 cd "$(dirname "$0")"
 
 echo "Starting AI Ritual..."
-python3 ritual_display.py &
+nohup python3 ritual_display.py > /dev/null 2>&1 &
 
-sleep 1
+sleep 2
 echo "[*] Training neural spirit..."
 python3 train.py
 
